@@ -17,15 +17,9 @@
 	},
 	"botMsaAppPassword":{
 	"value":""
-	},
-	"appInsightsName":{
-	"value":"appInsightsNameARM"
-	},
+	},	
 	"botserviceDisplayName":{
 	"value":"botserviceDisplayNameARM"
-	},
-	"botlogicEndpoint":{
-	"value":"https://appserviceNameARM/api/messages"
 	}
   }
 }
