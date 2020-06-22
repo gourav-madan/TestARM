@@ -2,36 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "useCosmosDb": {
-      "value": false
-    },
-    "useStorage": {
-      "value": false
-    },
-    "useContentModerator": {
-      "value": false
-    },
-    "appServicePlanSku": {
-      "value": {
-        "tier": "Free",
-        "name": "F1"
-      }
-    },
-    "botServiceSku": {
-      "value": "F0"
-    },
-    "luisRuntimeSku": {
-      "value": "F0"
-    },
-    "qnaMakerServiceLocation": {
-      "value": "westus"
-    },
-    "qnaMakerServiceSku": {
-      "value": "F0"
-    },
-    "qnaMakerSearchSku": {
-      "value": "free"
-    },
+   
 	"appservicePlanName":{
 	"value":"appserviceARM"
 	},
@@ -54,7 +25,7 @@
 	"value":"botserviceDisplayNameARM"
 	},
 	"botlogicEndpoint":{
-	"value":""
+	"value":"https://appserviceNameARM/api/messages"
 	}
   }
 }
