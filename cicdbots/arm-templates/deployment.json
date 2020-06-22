@@ -37,90 +37,47 @@
             "metadata": {
                  "description": "Microsoft Application Password for the bot"
              }
-         },       
-         "appInsightsName": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the Core App Insights Resource"
-            }
-        }
+         }
     },
     "variables": {
         "sharedTemplateUri" : "https://raw.githubusercontent.com/mspnp/solution-architectures/master/cicdbots/arm-templates/"
     },
     "resources": [ 
         {
-            "apiVersion": "2017-05-10",
-            "name": "appservicePlanDeployment",
-            "type": "Microsoft.Resources/deployments",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('appservicePlanName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                  "uri": "[concat(variables('sharedTemplateUri'), 'appservicePlan.json')]",
-                  "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appservicePlanName": {"value": "[parameters('appservicePlanName')]"}
-                }
+                "name": "[parameters('appservicePlanName')]"
             }
         },     
         {
-            "apiVersion": "2017-05-10",
-            "name": "appserviceDeployment",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "appservicePlanDeployment"
-            ],
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2015-08-01",
+            "name": "[parameters('appserviceName')]",
+            "location": "[resourceGroup().location]",
             "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                  "uri": "[concat(variables('sharedTemplateUri'), 'appservice.json')]",
-                  "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appservicePlanName": {"value": "[parameters('appservicePlanName')]"},
-                    "appserviceName": {"value": "[parameters('appserviceName')]"},
-                    "botserviceName": {"value": "[parameters('botserviceName')]"},
-                    "botMsaAppId": {"value": "[parameters('botMsaAppId')]"},
-                    "botMsaAppPassword": {"value": "[parameters('botMsaAppPassword')]"}
-                }
-            }
-        },  
-        {
-            "apiVersion": "2017-05-10",
-            "name": "applicationInsightsDeployment",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('sharedTemplateUri'), 'applicationInsights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {"value": "[parameters('appInsightsName')]"}
-                }
-            }
-        },   
-        {
-            "apiVersion": "2017-05-10",
-            "name": "botserviceDeployment",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "appserviceDeployment",
-                "applicationInsightsDeployment"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                  "uri": "[concat(variables('sharedTemplateUri'), 'botservice.json')]",
-                  "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "botserviceName": {"value": "[parameters('botserviceName')]"},
-                    "botserviceDisplayName": {"value": "[parameters('botserviceDisplayName')]"},
-                    "botLogicEndpoint": {"value": "[concat('https://', reference('appserviceDeployment').outputs.siteUri.value, '/api/messages')]"},
-                    "botMsaAppId": {"value": "[parameters('botMsaAppId')]"},
-                    "botAppInsightKey": {"value": "[reference('applicationInsightsDeployment').outputs.instrumentationKey.value]"}
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('appservicePlanName'))]",
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "BotId",
+                            "value": "[parameters('botserviceName')]"
+                        },
+                        {
+                            "name": "MicrosoftAppId",
+                            "value": "[parameters('botMsaAppId')]"
+                        },
+                        {
+                            "name": "MicrosoftAppPassword",
+                            "value": "[parameters('botMsaAppPassword')]"
+                        }
+                    ]
                 }
             }
         }
