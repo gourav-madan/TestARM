@@ -36,7 +36,8 @@
             "type": "string",
             "metadata": {
                  "description": "Bot logic End point"
-             }
+             },
+	    "value":"[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]"
          },
 	 "botguidValue": {
             "type": "string",
