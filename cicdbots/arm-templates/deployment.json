@@ -40,10 +40,20 @@
             "type": "string",
             "defaultValue": "F0"
         },
-        "qnaAppName": {
+        "accountName": {
             "type": "string",
-            "defaultValue":"qnaservicearm"
-        },    
+            "defaultValue": "[concat('cosmos-', uniqueString(resourceGroup().id))]",
+            "metadata": {
+                "description": "Cosmos DB account name"
+            }
+        },
+        "databaseName": {
+            "type": "string",
+	    "defaultValue": "botdb",
+            "metadata": {
+                "description": "The name for the Core (SQL) database"
+            }
+        },
 	"seed": { "type": "string", "defaultValue": "0" }
     },
     "variables": { 
@@ -70,7 +80,8 @@
      "y": "[replace(variables('x'), 'y', '2')]", 
      "z": "[replace(variables('y'), 'z', '3')]", 
      "tempguid": "[concat(substring(variables('z'), 0, 8), '-', substring(variables('z'), 9, 4), '-', substring(variables('z'), 14, 4), '-', substring(variables('z'), 19, 4), '-', substring(variables('z'), 24, 12))]",
-     "botendpoint" : "[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]"
+     "botendpoint" : "[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]",
+     "accountName": "[toLower(parameters('accountName'))]"
    }, 
     "resources": [ 
         {
@@ -120,7 +131,32 @@
                 "name": "[parameters('luisSkuName')]"
                 },
             "properties": {}
-        }        
+        },
+	{
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2020-03-01",
+            "name": "[parameters('accountName')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "enableFreeTier": true,
+                "databaseAccountOfferType": "Standard",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2020-03-01",
+            "name": "[concat(variables('accountName'), '/', parameters('databaseName'))]",
+            "dependsOn": [ "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]" ],
+            "properties": {
+                "resource": {
+                    "id": "[parameters('databaseName')]"
+                },
+                "options": {"throughput": 400}
+            }
+        }    
     ],
     "outputs": {
 		"webAppName": {
