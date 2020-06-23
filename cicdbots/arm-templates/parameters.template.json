@@ -4,22 +4,22 @@
   "parameters": {
    
 	"appservicePlanName":{
-	"value":"appserviceARM"
+		"value":"appserviceARM"
 	},
 	"appserviceName":{
-	"value":"appserviceNameARM"
+		"value":"appserviceNameARM"
 	},
 	"botserviceName":{
-	"value":"botserviceNameARM"
+		"value":"botserviceNameARM"
 	},
-	"botMsaAppId":{
-	"value":""
+	"botserviceTier":{
+		"value":"F0"
 	},
-	"botMsaAppPassword":{
-	"value":""
-	},	
+	"botlogicEndpoint":{
+		"value":"[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]"
+	},
 	"botserviceDisplayName":{
-	"value":"botserviceDisplayNameARM"
+		"value":"botARM"
 	}
   }
 }
