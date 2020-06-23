@@ -114,6 +114,7 @@
             "type": "Microsoft.CognitiveServices/accounts",
             "name": "[parameters('luisName')]",
             "location": "[resourceGroup().location]",
+	    "apiVersion": "2017-04-18",
             "kind": "LUIS",
             "sku": {
                 "name": "[parameters('luisSkuName')]"
@@ -123,6 +124,7 @@
         {
             "type": "Microsoft.CognitiveServices/accounts",
             "kind": "QnAMaker",
+	    "apiVersion": "2017-04-18",
             "name": "[parameters('qnaAppName')]",
             "location": "[resourceGroup().location]",
             "sku": {
