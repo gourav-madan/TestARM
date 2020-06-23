@@ -94,7 +94,7 @@
             "kind": "bot",
             "properties": {
                 "displayName": "[parameters('botserviceDisplayName')]",
-                "endpoint": "[parameters('botendpoint')]",
+                "endpoint": "[variables('botendpoint')]",
                 "msaAppId": "[variables('tempguid')]"               
             }
         }	
