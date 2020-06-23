@@ -120,22 +120,7 @@
                 "name": "[parameters('luisSkuName')]"
                 },
             "properties": {}
-        },
-        {
-            "type": "Microsoft.CognitiveServices/accounts",
-            "kind": "QnAMaker",
-	    "apiVersion": "2017-04-18",
-            "name": "[parameters('qnaAppName')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "[parameters('luisSkuName')]"
-            },
-            "properties": {
-                "apiProperties": {
-                    "qnaRuntimeEndpoint": "[concat('https://',reference(resourceId('Microsoft.Web/sites', parameters('qnaAppName'))).hostNames[0])]"
-                }
-            }
-        }		
+        }        
     ],
     "outputs": {
 		"webAppName": {
