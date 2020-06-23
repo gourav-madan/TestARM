@@ -15,9 +15,6 @@
 	"botserviceTier":{
 		"value":"F0"
 	},
-	"botlogicEndpoint":{
-		"value":"https://appserviceNameARM.azurewebsites.net/api/messages"
-	},
 	"botserviceDisplayName":{
 		"value":"botARM"
 	}
