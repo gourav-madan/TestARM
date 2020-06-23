@@ -32,7 +32,13 @@
                  "description": "Bot service Tier plan"
              }
          },
-		"botguidValue": {
+	 "botlogicEndpoint": {
+            "type": "string",
+            "metadata": {
+                 "description": "Bot logic End point"
+             }
+         },
+	 "botguidValue": {
             "type": "string",
             "defaultValue": "[newGuid()]"
         }		 
