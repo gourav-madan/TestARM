@@ -32,6 +32,18 @@
                  "description": "Bot service Tier plan"
              }
          },
+	"luisName": {
+            "type": "string",
+            "defaultValue": "luisservicearm"
+        },
+        "luisSkuName": {
+            "type": "string",
+            "defaultValue": "F0"
+        },
+        "qnaAppName": {
+            "type": "string",
+            "defaultValue":"qnaservicearm"
+        },    
 	"seed": { "type": "string", "defaultValue": "0" }
     },
     "variables": { 
@@ -83,8 +95,8 @@
                 "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('appservicePlanName'))]"
             }
         },
-		{
-			"type": "Microsoft.BotService/botServices",
+	{
+	    "type": "Microsoft.BotService/botServices",
             "name": "[parameters('botserviceName')]",
             "apiVersion": "2018-07-12",
             "location": "global",
@@ -97,8 +109,31 @@
                 "endpoint": "[variables('botendpoint')]",
                 "msaAppId": "[variables('tempguid')]"               
             }
-        }	
-		
+        },
+	{
+            "type": "Microsoft.CognitiveServices/accounts",
+            "name": "[parameters('luisName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "LUIS",
+            "sku": {
+                "name": "[parameters('luisSkuName')]"
+                },
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "kind": "QnAMaker",
+            "name": "[parameters('qnaAppName')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "[parameters('luisSkuName')]"
+            },
+            "properties": {
+                "apiProperties": {
+                    "qnaRuntimeEndpoint": "[concat('https://',reference(resourceId('Microsoft.Web/sites', parameters('qnaAppName'))).hostNames[0])]"
+                }
+            }
+        }		
     ],
     "outputs": {
 		"webAppName": {
