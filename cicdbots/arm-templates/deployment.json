@@ -20,27 +20,24 @@
                  "description": "Name of the Bot Service"
              }
          },
-         "botserviceDisplayName": {
+        "botserviceDisplayName": {
             "type": "string",
             "metadata": {
                  "description": "Display Name of the Bot"
              }
          },
-         "botMsaAppId": {
+        "botserviceTier": {
             "type": "string",
             "metadata": {
-                 "description": "Microsoft Application ID for the bot"
+                 "description": "Bot service Tier plan"
              }
          },
-         "botMsaAppPassword": {
-            "type": "securestring",
-            "metadata": {
-                 "description": "Microsoft Application Password for the bot"
-             }
-         }
+		"botguidValue": {
+            "type": "string",
+            "defaultValue": "[newGuid()]"
+        }		 
     },
-    "variables": {
-        "sharedTemplateUri" : "https://raw.githubusercontent.com/mspnp/solution-architectures/master/cicdbots/arm-templates/"
+    "variables": {        
     },
     "resources": [ 
         {
@@ -62,25 +59,30 @@
             "name": "[parameters('appserviceName')]",
             "location": "[resourceGroup().location]",
             "properties": {
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('appservicePlanName'))]",
-                "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "BotId",
-                            "value": "[parameters('botserviceName')]"
-                        },
-                        {
-                            "name": "MicrosoftAppId",
-                            "value": "[parameters('botMsaAppId')]"
-                        },
-                        {
-                            "name": "MicrosoftAppPassword",
-                            "value": "[parameters('botMsaAppPassword')]"
-                        }
-                    ]
-                }
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('appservicePlanName'))]"
             }
-        }
+        },
+		{
+			"type": "Microsoft.BotService/botServices",
+            "name": "[parameters('botserviceName')]",
+            "apiVersion": "2018-07-12",
+            "location": "global",
+            "sku": {
+                "name": "[parameters('botserviceTier')]"
+            },
+            "kind": "bot",
+            "properties": {
+                "displayName": "[parameters('botserviceDisplayName')]",
+                "endpoint": "[parameters('botlogicEndpoint')]",
+                "msaAppId": "[parameters('botguidValue')]",               
+            }
+        }	
+		
     ],
-    "outputs": {}
+    "outputs": {
+		"webAppName": {
+		"type": "string",
+		"value": "[parameters('appserviceName')]"
+		},
+	}
 }
