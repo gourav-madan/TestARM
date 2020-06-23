@@ -37,8 +37,6 @@
             "defaultValue": "[newGuid()]"
         }		 
     },
-    "variables": {        
-    },
     "resources": [ 
         {
             "type": "Microsoft.Web/serverfarms",
