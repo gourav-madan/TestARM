@@ -72,7 +72,7 @@
             "properties": {
                 "displayName": "[parameters('botserviceDisplayName')]",
                 "endpoint": "[parameters('botlogicEndpoint')]",
-                "msaAppId": "[parameters('botguidValue')]",               
+                "msaAppId": "[parameters('botguidValue')]"               
             }
         }	
 		
