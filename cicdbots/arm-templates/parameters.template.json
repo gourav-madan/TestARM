@@ -16,7 +16,7 @@
 		"value":"F0"
 	},
 	"botlogicEndpoint":{
-		"value":"[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]"
+		"value":"https://appserviceNameARM.azurewebsites.net/api/messages"
 	},
 	"botserviceDisplayName":{
 		"value":"botARM"
