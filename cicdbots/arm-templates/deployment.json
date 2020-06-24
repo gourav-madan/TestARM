@@ -81,13 +81,17 @@
 	    "type": "string",	
             "defaultValue": "qnaTestDevArm"
         },
+	"qnaappservicePlan": {
+	    "type": "string",	
+            "defaultValue": "qnaappserviceplanarm"
+        },
         "location": {
 	    "type": "string",	
             "defaultValue": "westus"
         },
         "location3": {
 	    "type": "string", 	
-            "defaultValue": "eastus"
+            "defaultValue": "centralus"
         },
         "location4": {
 	    "type": "string",	
@@ -292,14 +296,14 @@
                     }
                 },
                 "name": "[parameters('qnaAppName')]",
-                "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+                "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]",
                 "hostingEnvironment": ""
             },
             "tags": {
-                "[concat('hidden-related:', '/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "empty"
+                "[concat('hidden-related:', '/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]": "empty"
             },
             "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]"
+                "[concat('Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]"
             ],
             "resources": [
                 {
@@ -320,7 +324,24 @@
                     }
                 }
             ]
-        }
+        },
+	{
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('qnaappservicePlan')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location3')]",
+            "properties": {
+                "name": "[parameters('qnaappservicePlan')]",
+                "workerSizeId": "0",
+                "reserved": false,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": ""
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F0"
+            }
+        }    
     ],
     "outputs": {
 		"webAppName": {
