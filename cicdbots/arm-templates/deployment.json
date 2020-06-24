@@ -252,7 +252,7 @@
             "kind": "QnAMaker",
             "name": "[parameters('qnaAppName')]",
             "apiVersion": "2017-04-18",
-            "location": "[location]",
+            "location": "[parameters('location')]",
             "sku": {
                 "name": "[parameters('sku')]"
             },
