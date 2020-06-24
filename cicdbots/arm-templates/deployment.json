@@ -248,21 +248,18 @@
            "properties": {} 
        },
        {
+            "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2016-09-01",
             "name": "[parameters('qnaappservicePlan')]",
-            "type": "Microsoft.Web/serverfarms",
             "location": "[parameters('location3')]",
-            "properties": {
-                "name": "[parameters('qnaappservicePlan')]",
-                "workerSizeId": "0",
-                "reserved": false,
-                "numberOfWorkers": "1",
-                "hostingEnvironment": ""
-            },
             "sku": {
-                "name": "F1"
+                "name": "F1",
+                "capacity": 1
+            },
+            "properties": {
+                "name": "[parameters('qnaappservicePlan')]"
             }
-       },        
+       },
        {
             "type": "Microsoft.CognitiveServices/accounts",
             "kind": "QnAMaker",
