@@ -108,7 +108,7 @@
         "searchHostingMode": {
 	    "type": "string",	
             "defaultValue": "Default"
-        }
+        },
 	"seed": { "type": "string", "defaultValue": "0" }
     },
     "variables": { 
