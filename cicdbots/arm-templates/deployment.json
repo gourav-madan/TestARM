@@ -47,6 +47,13 @@
                 "description": "Cosmos DB account name"
             }
         },
+	"storageaccountName": {
+	"type": "string",
+	"defaultValue": "botstorage",
+	"metadata": {
+		"description": "Storage account"
+		}
+        },
         "databaseName": {
             "type": "string",
 	    "defaultValue": "botdb",
@@ -194,7 +201,17 @@
                 },
                 "options": { "throughput": "[parameters('throughput')]" }
             }
-	}
+	},
+	{ 
+           "type": "Microsoft.Storage/storageAccounts", 
+           "name": "[parameters('storageaccountName')]", 
+           "sku": { 
+               "name": "Standard_LRS" 
+           }, 
+           "apiVersion": "2018-02-01", 
+           "location": "[resourceGroup().location]", 
+           "properties": {} 
+       }
     ],
     "outputs": {
 		"webAppName": {
