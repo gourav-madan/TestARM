@@ -260,8 +260,7 @@
                 "hostingEnvironment": ""
             },
             "sku": {
-                "Tier": "Free",
-                "Name": "F0"
+                "name": "F1"
             }
        },        
        {
