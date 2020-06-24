@@ -309,8 +309,8 @@
                     }
                 },
                 "name": "[parameters('qnaAppName')]",
-                "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]",
-                "hostingEnvironment": ""
+                "serverFarmId": "[concat('/subscriptions/', Subscription().SubscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]",
+		"hostingEnvironment": ""
             },
             "tags": {
                 "[concat('hidden-related:', '/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('qnaappservicePlan'))]": "empty"
