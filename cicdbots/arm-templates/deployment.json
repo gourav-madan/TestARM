@@ -248,6 +248,23 @@
            "properties": {} 
        },
        {
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('qnaappservicePlan')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location3')]",
+            "properties": {
+                "name": "[parameters('qnaappservicePlan')]",
+                "workerSizeId": "0",
+                "reserved": false,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": ""
+            },
+            "sku": {
+                "Tier": "Free",
+                "Name": "F0"
+            }
+       },        
+       {
             "type": "Microsoft.CognitiveServices/accounts",
             "kind": "QnAMaker",
             "name": "[parameters('qnaAppName')]",
@@ -324,24 +341,7 @@
                     }
                 }
             ]
-        },
-	{
-            "apiVersion": "2016-09-01",
-            "name": "[parameters('qnaappservicePlan')]",
-            "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location3')]",
-            "properties": {
-                "name": "[parameters('qnaappservicePlan')]",
-                "workerSizeId": "0",
-                "reserved": false,
-                "numberOfWorkers": "1",
-                "hostingEnvironment": ""
-            },
-            "sku": {
-                "Tier": "Free",
-                "Name": "F0"
-            }
-        }    
+        }
     ],
     "outputs": {
 		"webAppName": {
