@@ -91,11 +91,11 @@
         },
         "location3": {
 	    "type": "string", 	
-            "defaultValue": "centralus"
+            "defaultValue": "westeurope"
         },
         "location4": {
 	    "type": "string",	
-            "defaultValue": "westus"
+            "defaultValue": "westeurope"
         },
         "sku": {
 	    "type": "string",	
