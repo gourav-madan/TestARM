@@ -48,11 +48,11 @@
             }
         },
 	"storageaccountName": {
-	 		"type": "string",
-			"defaultValue": "[concat('botstorage-', uniqueString(resourceGroup().id))]",
-			"metadata": {
-			"description": "Storage account"
-			}
+	     "type": "string",
+	     "defaultValue": "[concat('botstorage', uniqueString(resourceGroup().id))]",
+	     "metadata": {
+		"description": "Storage account"
+	    }
         },
         "databaseName": {
             "type": "string",
@@ -76,7 +76,39 @@
             "metadata": {
                 "description": "The throughput for the container"
             }            
-        },    
+        },
+	"qnaAppName": {
+	    "type": "string",	
+            "defaultValue": "qnaTestDevArm"
+        },
+        "appServicePlanName": {
+	    "type": "string",	
+            "defaultValue": "qnaTestDevArm-plan"
+        },
+        "location": {
+	    "type": "string",	
+            "defaultValue": "westus"
+        },
+        "location3": {
+	    "type": "string", 	
+            "defaultValue": "westeurope"
+        },
+        "location4": {
+	    "type": "string",	
+            "defaultValue": "westeurope"
+        },
+        "sku": {
+	    "type": "string",	
+            "defaultValue": "F0"
+        },
+        "sku2": {
+	    "type": "string",	
+            "defaultValue": "free"
+        },
+        "searchHostingMode": {
+	    "type": "string",	
+            "defaultValue": "Default"
+        }
 	"seed": { "type": "string", "defaultValue": "0" }
     },
     "variables": { 
@@ -104,7 +136,10 @@
      "z": "[replace(variables('y'), 'z', '3')]", 
      "tempguid": "[concat(substring(variables('z'), 0, 8), '-', substring(variables('z'), 9, 4), '-', substring(variables('z'), 14, 4), '-', substring(variables('z'), 19, 4), '-', substring(variables('z'), 24, 12))]",
      "botendpoint" : "[concat('https://', parameters('appserviceName'), '.azurewebsites.net/api/messages')]",
-     "accountName": "[toLower(parameters('accountName'))]"
+     "accountName": "[toLower(parameters('accountName'))]",
+     "puredAzureSearchName": "[replace(parameters('qnaAppName'), '-', '')]",
+     "normalizedAzureSearchName": "[if(greater(length(variables('puredAzureSearchName')), 40), substring(variables('puredAzureSearchName'), sub(length(variables('puredAzureSearchName')), 40), 40) , variables('puredAzureSearchName'))]",
+     "azureSearchName": "[toLower(concat(variables('normalizedAzureSearchName'), '-as', uniqueString(resourceGroup().id, variables('normalizedAzureSearchName'), parameters('sku2'), parameters('location4'), parameters('searchHostingMode'))))]"
    }, 
     "resources": [ 
         {
@@ -211,7 +246,102 @@
            "apiVersion": "2018-02-01", 
            "location": "[resourceGroup().location]", 
            "properties": {} 
-       }
+       },
+       {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "kind": "QnAMaker",
+            "name": "[parameters('qnaAppName')]",
+            "apiVersion": "2017-04-18",
+            "location": "[location]",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "properties": {
+                "apiProperties": {
+                    "qnaRuntimeEndpoint": "[concat('https://',reference(resourceId('Microsoft.Web/sites', parameters('qnaAppName'))).hostNames[0])]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/Sites', parameters('qnaAppName'))]",
+                "[resourceId('Microsoft.Search/searchServices/', variables('azureSearchName'))]"
+            ]
+        },
+        {
+            "name": "[variables('azureSearchName')]",
+            "type": "Microsoft.Search/searchServices",
+            "apiVersion": "2015-08-19",
+            "location": "[parameters('location4')]",
+            "tags": {},
+            "properties": {
+                "replicaCount": 1,
+                "partitionCount": 1,
+                "hostingMode": "[parameters('searchHostingMode')]"
+            },
+            "sku": {
+                "name": "[parameters('sku2')]"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "name": "[parameters('qnaAppName')]",
+            "location": "[parameters('location3')]",
+            "properties": {
+                "enabled": true,
+                "siteConfig": {
+                    "cors": {
+                        "allowedOrigins": [
+                            "*"
+                        ]
+                    }
+                },
+                "name": "[parameters('qnaAppName')]",
+                "serverFarmId": "[concat('/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]",
+                "hostingEnvironment": ""
+            },
+            "tags": {
+                "[concat('hidden-related:', '/subscriptions/', subscription().id,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]": "empty"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Web/serverfarms/', parameters('appServicePlanName'))]"
+            ],
+            "resources": [
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "appsettings",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('qnaAppName'))]",
+                        "[resourceId('Microsoft.Search/searchServices/', variables('azureSearchName'))]"
+                    ],
+                    "properties": {
+                        "AzureSearchName": "[variables('azureSearchName')]",
+                        "AzureSearchAdminKey": "[listAdminKeys(resourceId('Microsoft.Search/searchServices/', variables('azureSearchName')), '2015-08-19').primaryKey]",
+                        "PrimaryEndpointKey": "[concat(parameters('qnaAppName'), '-PrimaryEndpointKey')]",
+                        "SecondaryEndpointKey": "[concat(parameters('qnaAppName'), '-SecondaryEndpointKey')]",
+                        "DefaultAnswer": "No good match found in KB.",
+                        "QNAMAKER_EXTENSION_VERSION": "latest"
+                    }
+                }
+            ]
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('appServicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location3')]",
+            "properties": {
+                "name": "[parameters('appServicePlanName')]",
+                "workerSizeId": "0",
+                "reserved": false,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": ""
+            },
+            "sku": {
+                "Tier": "free",
+                "Name": "F0"
+            }
+        }    
     ],
     "outputs": {
 		"webAppName": {
