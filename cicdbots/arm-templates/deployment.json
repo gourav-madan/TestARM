@@ -48,11 +48,11 @@
             }
         },
 	"storageaccountName": {
-	"type": "string",
-	"defaultValue": "botstorage",
-	"metadata": {
-		"description": "Storage account"
-		}
+	 		"type": "string",
+			"defaultValue": "[concat('botstorage-', uniqueString(resourceGroup().id))]",
+			"metadata": {
+			"description": "Storage account"
+			}
         },
         "databaseName": {
             "type": "string",
